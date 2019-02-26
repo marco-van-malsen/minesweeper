@@ -13,15 +13,18 @@ class Cell {
   constructor(col, row, w) {
     this.bee = false; // does the cell have a bee in it?
     this.col = col; // index for column on gid
-    this.cX = col * w + 0.5 * w; // center of cell; x-coordinate
-    this.cY = row * w + 0.5 * w; // center of cell; y-coordinate
     this.flagged = false; // cell contains a flag
     this.neighborCount = 0; // number of neighboring bees
     this.revealed = false; // has the cell been revealed
     this.row = row; // index for row on grid
+    this.sneak = false; // sneak a peak at the cell if it is a bee
     this.x = col * w; // upper left corner of cell; x-coordinate
-    this.y = row * w; // upper left corner of cell; y-coordinate
+    this.y = header + separator + row * w; // upper left corner of cell; y-coordinate
     this.w = w; // cell size in pixels, both height and width
+
+    // with dependencies to other variables
+    this.cX = this.x + 0.5 * w; // center of cell; x-coordinate
+    this.cY = this.y + 0.5 * w; // center of cell; y-coordinate
   }
 
   // count number of bees in neighboring cells
@@ -73,14 +76,26 @@ class Cell {
     // reveal the cell
     this.revealed = true;
 
+    // unflag the cell
+    this.flagged = false;
+
+    // un sneak-a-peak the cell
+    this.sneak = false;
+
     // cell has no neighboring bees; floodfill
     if (this.neighborCount === 0) this.floodFill();
   }
 
   // show cell and content
   show() {
+    // set and format text
+    textAlign(CENTER, CENTER);
+    textStyle(NORMAL);
+
     // draw cell outline
     noFill();
+    if (this.sneak) fill(225);
+    stroke(0);
     rect(this.x, this.y, this.w, this.w);
 
     // show flagged cell
@@ -107,6 +122,15 @@ class Cell {
         text(this.neighborCount, this.cX, this.cY);
       }
     }
+  }
+
+  // sneak a peak at the cell
+  sneakPeak() {
+    // do nothing if cell already revealed
+    if (this.revealed) return;
+
+    // change the flagged state
+    this.sneak = this.bee;
   }
 
   // place a Flagged

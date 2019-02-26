@@ -10,34 +10,31 @@
 // Marco van Malsen
 
 // declare global variables
-var cols; // number of columns
+var cellsFlagged; // number cells the user has flagged as possible bee
+var cellsUnmarked; // number of cells that have not been marked yet
+var cellsRevealed; // number of cells that have been revealed
+var cols = 20; // number of columns
 var grid; // the grid
-var rows; // number of rows
+var rows = 20; // number of rows
 var w = 20; // cell-size, height and width
 var totalBees; // total number of bees on the grid
+var header = 40; // pixels along y-axis reserved for header
+var separator = 10; // pixels along y-axis reserved for separtor between header and grid
 
 function setup() {
   // create canvas
-  createCanvas(401, 401);
+  createCanvas(cols * w + 1, header + separator + rows * w + 1);
 
-  // fixed settings that will not change
-  stroke(0);
-  textAlign(CENTER, CENTER);
-
-  // create grid
+  // create grid, add bees
   createGrid();
   addRandomBees();
-  countAllNeighbours();
+  countAllNeighbors();
 }
 
 function draw() {
   background(255);
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
-      grid[col][row].show();
-    }
-  }
-
-  //
-  // text("Cells:" + rows * cols + "; Bees:" + totalBees + "; Revealed:" + 0 + "; Flagged:" + 0, cols * w * 0.5, rows * w * 0.5);
+  checkCells();
+  drawHeader();
+  showAllCells();
+  if (cellsFlagged + cellsUnmarked === totalBees) gameOver();
 }

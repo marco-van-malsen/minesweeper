@@ -14,9 +14,10 @@ var cellsFlagged; // number cells the user has flagged as possible bee
 var cellsUnmarked; // number of cells that have not been marked yet
 var cellsRevealed; // number of cells that have been revealed
 var cols = 20; // number of columns
+var enableCheats = false; // cheating mode
 var grid; // the grid
 var rows = 20; // number of rows
-var w = 20; // cell-size, height and width
+var w = 30; // cell-size, height and width
 var totalBees; // total number of bees on the grid
 var header = 40; // pixels along y-axis reserved for header
 var separator = 10; // pixels along y-axis reserved for separtor between header and grid

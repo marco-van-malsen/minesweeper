@@ -63,7 +63,7 @@ function countAllNeighbors() {
 function createGrid() {
   // determine number of columns based on canvas size
   cols = floor(width / w);
-  rows = floor(height / w);
+  rows = floor((height - header - separator) / w);
 
   // create the grid
   grid = new Array(cols);
@@ -115,24 +115,46 @@ function gameOver() {
   }
 }
 
-// what to do when the mouse is pressed
-function mouseMoved() {
-  // only run if CTRL-key is pressed
+// what to do when a key is pressed
+function keyPressed() {
+  // CTRL-key
   if (keyCode === CONTROL) {
-
-    // calculate which cell was clicked
-    let col = floor(mouseX / w);
-    let row = floor((mouseY - separator - header) / w);
-
-    // mouse not over a cell
-    if (col < 0 || col >= cols || row < 0 || row >= rows) return;
-
-    // sneak a peak at the cell
-    grid[col][row].sneakPeak();
-
-    // prevent default
-    return false;
+    enableCheats = true;
   }
+}
+
+// what to do when a key is released
+function keyReleased() {
+  // CTRL-key
+  if (keyCode === CONTROL) {
+    enableCheats = false;
+  }
+
+  // disable cheats
+  for (var col = 0; col < cols; col++) {
+    for (var row = 0; row < rows; row++) {
+      grid[col][row].cheat = false;
+    }
+  }
+}
+
+// what to do when the mouse is moved
+function mouseMoved() {
+  // this inly kicks in if cheats are enabled
+  if (!enableCheats) return
+
+  // calculate which cell was clicked
+  let col = floor(mouseX / w);
+  let row = floor((mouseY - header - separator) / w);
+
+  // mouse not over a cell
+  if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+
+  // sneak a peak at the cell
+  grid[col][row].sneakPeak();
+
+  // prevent default
+  return false;
 }
 
 // what to do when the mouse is pressed
@@ -146,12 +168,22 @@ function mousePressed() {
 
   // reveal cell
   if (mouseButton === LEFT) {
+    // ignore click when cell is flagged
+    if (grid[col][row].flagged) return;
+
+    // reveal the cell otherwise
     grid[col][row].reveal();
+
+    // game over after if cell had a bee
     if (grid[col][row].bee) gameOver();
 
     // place a flag
   } else if (mouseButton === CENTER) {
-    grid[col][row].toggleFlag();
+    if (grid[col][row].revealed) {
+      grid[col][row].floodFillAlt();
+    } else {
+      grid[col][row].toggleFlag();
+    }
   }
 
   // prevent default

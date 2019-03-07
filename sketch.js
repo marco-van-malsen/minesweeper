@@ -21,6 +21,11 @@ var w = 30; // cell-size, height and width
 var totalBees; // total number of bees on the grid
 var header = 40; // pixels along y-axis reserved for header
 var separator = 10; // pixels along y-axis reserved for separtor between header and grid
+var scoreFont; // font used for scoring / points
+
+function preload() {
+  scoreFont = loadFont('assets/DS-DIGIB.TTF');
+}
 
 function setup() {
   // create canvas

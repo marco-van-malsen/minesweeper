@@ -90,20 +90,25 @@ function drawHeader() {
   noStroke();
   fill(0);
   textAlign(CENTER, CENTER);
-  textSize(12);
+  textSize(0.75 * header);
   textStyle(BOLD);
-  text("Bee-Sweeper", cols * w * 0.5, header * 1 / 3);
-  text(totalBees - cellsFlagged + "/" + totalBees + " bees", cols * w * 0.5, header * 2 / 3)
+  text("Mine Sweeper", cols * w * 0.5, header * 0.5 + 1);
 
-  // show number of flags
-  textAlign(LEFT, CENTER);
-  text("Flags", 10, header * 1 / 3);
-  text(cellsFlagged, 10, header * 2 / 3);
+  // draw black background for score
+  push();
+  fill(0);
+  stroke(0);
+  rect(4, 4, 60, header - 8);
 
-  // show number of flags
+  // draw score in red with special font
+  fill(255, 0, 0);
+  noStroke();
   textAlign(RIGHT, CENTER);
-  text("Unmarked : " + cellsUnmarked, cols * w - 10, header * 1 / 3);
-  text("Revealed : " + cellsRevealed, cols * w - 10, header * 2 / 3);
+  textFont(scoreFont);
+  textSize(header);
+  textStyle(NORMAL);
+  text(totalBees - cellsFlagged, 4 + 60 - 4, header * 0.5 - 3)
+  pop();
 }
 
 // game over; reveal all cells

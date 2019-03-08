@@ -20,7 +20,7 @@ function addRandomMines() {
   }
 
   // 10 percent of cells will have a mine
-  totalMines = rows * cols * 0.1;
+  totalMines = floor(rows * cols * 0.1);
 
   // add selecting random cell, add mine and the remove cell
   for (var b = 0; b < totalMines; b++) {
@@ -46,6 +46,7 @@ function checkCells() {
 
   // player finished game and won
   if (cellsFlagged === totalMines && cellsUnmarked === totalMines) gameOver = true;
+  if (cellsFlagged + cellsUnmarked === totalMines) gameOver = true;
 }
 
 // count neighbors
@@ -109,7 +110,7 @@ function drawHeader() {
   textFont(scoreFont);
   textSize(header);
   textStyle(NORMAL);
-  fill(127, 0, 0);
+  fill(65, 0, 0);
   text("000", 4 + scoreWidth + 2 * charDist, header * 0.5 - 3)
   fill(255, 0, 0);
   text(totalMines - cellsFlagged, 4 + scoreWidth + 2 * charDist, header * 0.5 - 3)

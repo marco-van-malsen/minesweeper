@@ -81,7 +81,7 @@ class Cell {
       for (var yOff = -1; yOff <= 1; yOff++) {
         var row = this.row + yOff;
         if (row < 0 || row >= rows) continue;
-        if (grid[col][row].flagged) flagsFound++;
+        if (grid[col][row].flagged && grid[col][row].mine) flagsFound++;
       }
     }
 
@@ -153,7 +153,7 @@ class Cell {
         this.cX - 0.2 * this.w, this.cY - 0.1 * this.w);
     }
 
-    // drag relief
+    // draw relief
     if (!this.revealed) {
       let margin = 1;
       let upperL = createVector(this.x + margin, this.y + margin);

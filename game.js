@@ -94,20 +94,27 @@ function drawHeader() {
   textStyle(BOLD);
   text("Mine Sweeper", cols * w * 0.5, header * 0.5 + 1);
 
+  // setup character dimensions (as measured in ms-paint)
+  let charWidth = 16;
+  let charDist = 4;
+  let scoreWidth = 3 * charWidth + 2 * charDist;
+
   // draw black background for score
   push();
   fill(0);
   stroke(0);
-  rect(4, 4, 60, header - 8);
+  rect(4, 4, scoreWidth + 2 * charDist, header - 8);
 
   // draw score in red with special font
-  fill(255, 0, 0);
   noStroke();
   textAlign(RIGHT, CENTER);
   textFont(scoreFont);
   textSize(header);
   textStyle(NORMAL);
-  text(totalMines - cellsFlagged, 4 + 60 - 4, header * 0.5 - 3)
+  fill(127, 0, 0);
+  text("000", 4 + scoreWidth + 2 * charDist, header * 0.5 - 3)
+  fill(255, 0, 0);
+  text(totalMines - cellsFlagged, 4 + scoreWidth + 2 * charDist, header * 0.5 - 3)
   pop();
 }
 

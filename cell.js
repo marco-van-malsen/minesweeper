@@ -11,11 +11,11 @@
 
 class Cell {
   constructor(col, row, w) {
-    this.bee = false; // does the cell have a bee in it?
-    this.cheat = false; // sneak a peak at the cell if it is a bee
+    this.mine = false; // does the cell have a mine in it?
+    this.cheat = false; // sneak a peak at the cell to see if it is a mine
     this.col = col; // index for column on gid
     this.flagged = false; // cell contains a flag
-    this.neighborCount = 0; // number of neighboring bees
+    this.neighborCount = 0; // number of neighboring mines
     this.revealed = false; // has the cell been revealed
     this.row = row; // index for row on grid
     this.x = col * w; // upper left corner of cell; x-coordinate
@@ -27,15 +27,15 @@ class Cell {
     this.cY = this.y + 0.5 * w; // center of cell; y-coordinate
   }
 
-  // count number of bees in neighboring cells
-  countBees() {
-    // skip if cell contains a bee
-    if (this.bee) {
+  // count number of mines in neighboring cells
+  countMines() {
+    // skip if cell contains a mine
+    if (this.mine) {
       this.neighborCount = -1;
       return;
     }
 
-    // count bees is neighbor cells
+    // count mines is neighbor cells
     var total = 0;
     for (var xOff = -1; xOff <= 1; xOff++) {
       var col = this.col + xOff;
@@ -46,7 +46,7 @@ class Cell {
         if (row < 0 || row >= rows) continue;
 
         var neighbor = grid[col][row];
-        if (neighbor.bee) {
+        if (neighbor.mine) {
           total++;
         }
       }
@@ -88,7 +88,7 @@ class Cell {
     // validate
     if (flagsFound != this.neighborCount) return;
 
-    // flood fill neighbor cells without bees
+    // flood fill neighbor cells without mines
     for (var xOff = -1; xOff <= 1; xOff++) {
       var col = this.col + xOff;
       if (col < 0 || col >= cols) continue;
@@ -96,9 +96,9 @@ class Cell {
       for (var yOff = -1; yOff <= 1; yOff++) {
         var row = this.row + yOff;
         if (row < 0 || row >= rows) continue;
-        // if (!grid[col][row].revealed && !grid[col][row].bee) grid[col][row].reveal();
+        // if (!grid[col][row].revealed && !grid[col][row].mine) grid[col][row].reveal();
         if (grid[col][row].revealed) continue;
-        if (grid[col][row].bee) continue;
+        if (grid[col][row].mine) continue;
         grid[col][row].reveal();
       }
     }
@@ -118,7 +118,7 @@ class Cell {
     // un sneak-a-peak the cell
     this.cheat = false;
 
-    // cell has no neighboring bees; floodfill
+    // cell has no neighboring mines; floodfill
     if (this.neighborCount === 0) this.floodFill();
   }
 
@@ -173,8 +173,8 @@ class Cell {
     // cell not revealed; return
     if (!this.revealed) return;
 
-    // cell has a bee
-    if (this.bee) {
+    // cell has a mine
+    if (this.mine) {
       fill(0);
       stroke(0);
       ellipse(this.cX, this.cY, this.w * 0.4);
@@ -187,7 +187,7 @@ class Cell {
 
       // cell has neighbours
     } else {
-      // show number of neighbor bees
+      // show number of neighbor mines
       if (this.neighborCount > 0) {
         switch (this.neighborCount) {
           case 1:
@@ -242,7 +242,7 @@ class Cell {
     if (this.revealed) return;
 
     // change the flagged state
-    this.cheat = this.bee;
+    this.cheat = this.mine;
   }
 
   // place a Flagged

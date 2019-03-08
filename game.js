@@ -9,9 +9,9 @@
 // Extended
 // Marco van Malsen
 
-// add random bees
-function addRandomBees() {
-  // create a list of all possible cells where a bee can be
+// add random mines
+function addRandomMines() {
+  // create a list of all possible cells where a mine can be
   var options = [];
   for (var row = 0; row < cols; row++) {
     for (var col = 0; col < rows; col++) {
@@ -19,16 +19,16 @@ function addRandomBees() {
     }
   }
 
-  // 10 percent of cells will have a bee
-  totalBees = rows * cols * 0.1;
+  // 10 percent of cells will have a mine
+  totalMines = rows * cols * 0.1;
 
-  // add selecting random cell, add bee and the remove cell
-  for (var b = 0; b < totalBees; b++) {
+  // add selecting random cell, add mine and the remove cell
+  for (var b = 0; b < totalMines; b++) {
     var index = floor(random(options.length));
     var choice = options[index];
     var col = choice[0];
     var row = choice[1];
-    grid[col][row].bee = true;
+    grid[col][row].mine = true;
     options.splice(index, 1);
   }
 }
@@ -54,7 +54,7 @@ function checkCells() {
 function countAllNeighbors() {
   for (var col = 0; col < cols; col++) {
     for (var row = 0; row < rows; row++) {
-      grid[col][row].countBees();
+      grid[col][row].countMines();
     }
   }
 }
@@ -107,7 +107,7 @@ function drawHeader() {
   textFont(scoreFont);
   textSize(header);
   textStyle(NORMAL);
-  text(totalBees - cellsFlagged, 4 + 60 - 4, header * 0.5 - 3)
+  text(totalMines - cellsFlagged, 4 + 60 - 4, header * 0.5 - 3)
   pop();
 }
 
@@ -179,8 +179,8 @@ function mousePressed() {
     // reveal the cell otherwise
     grid[col][row].reveal();
 
-    // game over after if cell had a bee
-    if (grid[col][row].bee) gameOver();
+    // game over after if cell had a mine
+    if (grid[col][row].mine) gameOver();
 
     // place a flag
   } else if (mouseButton === CENTER) {

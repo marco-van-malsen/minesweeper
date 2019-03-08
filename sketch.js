@@ -12,16 +12,17 @@
 // declare global variables
 var cellsFlagged; // number cells the user has flagged as possible mine
 var cellsUnmarked; // number of cells that have not been marked yet
-var cellsRevealed; // number of cells that have been revealed
 var cols = 20; // number of columns
 var enableCheats = false; // cheating mode
+var gameOver = false; // game state, game is running or over
 var grid; // the grid
-var rows = 20; // number of rows
-var w = 30; // cell-size, height and width
-var totalMines; // total number of mines on the grid
 var header = 40; // pixels along y-axis reserved for header
-var separator = 10; // pixels along y-axis reserved for separtor between header and grid
+var playerWins = true; // keep track if player won or lost
+var rows = 20; // number of rows
 var scoreFont; // font used for scoring / points
+var separator = 10; // pixels along y-axis reserved for separtor between header and grid
+var totalMines; // total number of mines on the grid
+var w = 30; // cell-size, height and width
 
 function preload() {
   scoreFont = loadFont('assets/DS-DIGIB.TTF');
@@ -39,8 +40,12 @@ function setup() {
 
 function draw() {
   background(255);
-  checkCells();
   drawHeader();
   showAllCells();
-  if (cellsFlagged + cellsUnmarked === totalMines) gameOver();
+  checkCells();
+
+  if (gameOver) {
+    revealAllCells();
+    showGameOverText();
+  }
 }

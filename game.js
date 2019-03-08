@@ -37,17 +37,15 @@ function addRandomMines() {
 function checkCells() {
   cellsFlagged = 0;
   cellsUnmarked = 0;
-  cellsRevealed = 0;
   for (var col = 0; col < cols; col++) {
     for (var row = 0; row < rows; row++) {
       if (grid[col][row].flagged) cellsFlagged++;
-      if (grid[col][row].revealed) {
-        cellsRevealed++;
-      } else {
-        cellsUnmarked++;
-      }
+      if (!grid[col][row].revealed) cellsUnmarked++;
     }
   }
+
+  // player finished game and won
+  if (cellsFlagged === totalMines && cellsUnmarked === totalMines) gameOver = true;
 }
 
 // count neighbors
@@ -118,15 +116,6 @@ function drawHeader() {
   pop();
 }
 
-// game over; reveal all cells
-function gameOver() {
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
-      grid[col][row].revealed = true;
-    }
-  }
-}
-
 // what to do when a key is pressed
 function keyPressed() {
   // CTRL-key
@@ -187,7 +176,10 @@ function mousePressed() {
     grid[col][row].reveal();
 
     // game over after if cell had a mine
-    if (grid[col][row].mine) gameOver();
+    if (grid[col][row].mine) {
+      gameOver = true;
+      playerWins = false;
+    }
 
     // place a flag
   } else if (mouseButton === CENTER) {
@@ -202,6 +194,14 @@ function mousePressed() {
   return false;
 }
 
+// reveal all cells
+function revealAllCells() {
+  for (var col = 0; col < cols; col++) {
+    for (var row = 0; row < rows; row++) {
+      grid[col][row].revealed = true;
+    }
+  }
+}
 // show all cells
 function showAllCells() {
   for (var col = 0; col < cols; col++) {
@@ -209,4 +209,29 @@ function showAllCells() {
       grid[col][row].show();
     }
   }
+}
+
+// show the game over text
+function showGameOverText() {
+  // setup character dimensions (as measured in ms-paint)
+  let charWidth = 16;
+  let charDist = 4;
+
+  let gameOverText = (playerWins ? "You Win" : "You Lose");
+  let textWidth = (gameOverText.length * charWidth + (gameOverText.length - 1) * charDist);
+
+  // draw black background for gome over text
+  push();
+  fill(0);
+  stroke(0);
+  rect(width - 4 - textWidth - 2 * charDist, 4, textWidth + 2 * charDist, header - 8);
+
+  // draw text
+  fill(255, 0, 0);
+  textAlign(RIGHT, CENTER);
+  textFont(scoreFont);
+  textSize(header);
+  textStyle(NORMAL);
+  text(gameOverText, width - 4 - charDist, header * 0.5 - 3);
+  pop();
 }

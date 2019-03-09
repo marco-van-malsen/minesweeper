@@ -175,7 +175,12 @@ function mousePressed() {
   redraw();
 
   // prevent default
-  // return false;
+  return false;
+}
+
+// what to do when a touch event had ended
+function touchEnded() {
+  mousePressed();
 }
 
 // reveal all cells

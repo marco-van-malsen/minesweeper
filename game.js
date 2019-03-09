@@ -117,36 +117,13 @@ function drawHeader() {
   pop();
 }
 
-// what to do when a key is pressed
-function keyPressed() {
-  // CTRL-key
-  if (keyCode === CONTROL) {
-    enableCheats = true;
-  }
-}
-
-// what to do when a key is released
-function keyReleased() {
-  // CTRL-key
-  if (keyCode === CONTROL) {
-    enableCheats = false;
-  }
-
-  // disable cheats
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
-      grid[col][row].cheat = false;
-    }
-  }
-}
-
 // what to do when the mouse is pressed
 function mousePressed() {
   for (var col = 0; col < cols; col++) {
     for (var row = 0; row < rows; row++) {
       if (grid[col][row].contains(mouseX, mouseY)) {
         // reveal cell
-        if (mouseButton === LEFT) {
+        if (mouseButton != CENTER && mouseButton != RIGHT) {
           // ignore click when cell is flagged
           if (grid[col][row].flagged) return;
 
@@ -176,11 +153,6 @@ function mousePressed() {
 
   // prevent default
   return false;
-}
-
-// what to do when a touch event had ended
-function touchEnded() {
-  mousePressed();
 }
 
 // reveal all cells

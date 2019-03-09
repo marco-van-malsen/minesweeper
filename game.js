@@ -139,59 +139,42 @@ function keyReleased() {
   }
 }
 
-// what to do when the mouse is moved
-function mouseMoved() {
-  // this inly kicks in if cheats are enabled
-  if (!enableCheats) return
-
-  // calculate which cell was clicked
-  let col = floor(mouseX / w);
-  let row = floor((mouseY - header - separator) / w);
-
-  // mouse not over a cell
-  if (col < 0 || col >= cols || row < 0 || row >= rows) return;
-
-  // sneak a peak at the cell
-  grid[col][row].sneakPeak();
-
-  // prevent default
-  return false;
-}
-
 // what to do when the mouse is pressed
 function mousePressed() {
-  // calculate which cell was clicked
-  let col = floor(mouseX / w);
-  let row = floor((mouseY - separator - header) / w);
+  for (var col = 0; col < cols; col++) {
+    for (var row = 0; row < rows; row++) {
+      if (grid[col][row].contains(mouseX, mouseY)) {
+        // reveal cell
+        if (mouseButton === LEFT) {
+          // ignore click when cell is flagged
+          if (grid[col][row].flagged) return;
 
-  // clicked outside the grid
-  if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+          // reveal the cell otherwise
+          grid[col][row].reveal();
 
-  // reveal cell
-  if (mouseButton === LEFT) {
-    // ignore click when cell is flagged
-    if (grid[col][row].flagged) return;
+          // game over after if cell had a mine
+          if (grid[col][row].mine) {
+            gameOver = true;
+            playerWins = false;
+          }
 
-    // reveal the cell otherwise
-    grid[col][row].reveal();
-
-    // game over after if cell had a mine
-    if (grid[col][row].mine) {
-      gameOver = true;
-      playerWins = false;
-    }
-
-    // place a flag
-  } else if (mouseButton === CENTER) {
-    if (grid[col][row].revealed) {
-      grid[col][row].floodFillAlt();
-    } else {
-      grid[col][row].toggleFlag();
+          // place a flag
+        } else if (mouseButton === CENTER) {
+          if (grid[col][row].revealed) {
+            grid[col][row].floodFillAlt();
+          } else {
+            grid[col][row].toggleFlag();
+          }
+        }
+      }
     }
   }
 
+  // redraw the canvas
+  redraw();
+
   // prevent default
-  return false;
+  // return false;
 }
 
 // reveal all cells

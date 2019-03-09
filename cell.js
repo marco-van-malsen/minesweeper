@@ -12,7 +12,6 @@
 class Cell {
   constructor(col, row, w) {
     this.mine = false; // does the cell have a mine in it?
-    this.cheat = false; // sneak a peak at the cell to see if it is a mine
     this.col = col; // index for column on gid
     this.flagged = false; // cell contains a flag
     this.neighborCount = 0; // number of neighboring mines
@@ -25,6 +24,11 @@ class Cell {
     // with dependencies to other variables
     this.cX = this.x + 0.5 * w; // center of cell; x-coordinate
     this.cY = this.y + 0.5 * w; // center of cell; y-coordinate
+  }
+
+  // check if the cell was clicked
+  contains(x, y) {
+    return (x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w);
   }
 
   // count number of mines in neighboring cells
@@ -113,7 +117,7 @@ class Cell {
     this.revealed = true;
 
     // unflag the cell
-    this.flagged = false;
+    if (this.flagged) this.flagged = false;
 
     // un sneak-a-peak the cell
     this.cheat = false;
@@ -234,15 +238,6 @@ class Cell {
         text(this.neighborCount, this.cX, this.cY);
       }
     }
-  }
-
-  // cheat a peak at the cell
-  sneakPeak() {
-    // do nothing if cell already revealed
-    if (this.revealed) return;
-
-    // change the flagged state
-    this.cheat = this.mine;
   }
 
   // place a Flagged

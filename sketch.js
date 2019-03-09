@@ -13,7 +13,6 @@
 var cellsFlagged; // number cells the user has flagged as possible mine
 var cellsUnmarked; // number of cells that have not been marked yet
 var cols = 20; // number of columns
-var enableCheats = false; // cheating mode
 var gameOver = false; // game state, game is running or over
 var grid; // the grid
 var header = 40; // pixels along y-axis reserved for header
@@ -36,16 +35,17 @@ function setup() {
   createGrid();
   addRandomMines();
   countAllNeighbors();
+  noLoop();
+  draw();
 }
 
 function draw() {
   background(255);
-  drawHeader();
-  showAllCells();
   checkCells();
-
+  drawHeader();
   if (gameOver) {
     revealAllCells();
     showGameOverText();
   }
+  showAllCells();
 }

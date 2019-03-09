@@ -91,7 +91,7 @@ function drawHeader() {
   textAlign(CENTER, CENTER);
   textSize(0.75 * header);
   textStyle(BOLD);
-  text("Mine Sweeper", cols * w * 0.5, header * 0.5 + 1);
+  text("Minesweeper", cols * w * 0.5, header * 0.5 + 1);
 
   // setup character dimensions (as measured in ms-paint)
   let charWidth = 16;

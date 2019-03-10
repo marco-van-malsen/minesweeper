@@ -36,17 +36,19 @@ function addRandomMines() {
 // check all cells and count flagged and unmarked cells
 function checkCells() {
   cellsFlagged = 0;
+  cellsFlaggedCorrectly = 0;
   cellsUnmarked = 0;
   for (var col = 0; col < cols; col++) {
     for (var row = 0; row < rows; row++) {
       if (grid[col][row].flagged) cellsFlagged++;
+      if (grid[col][row].flagged && grid[col][row].mine) cellsFlaggedCorrectly++;
       if (!grid[col][row].revealed) cellsUnmarked++;
     }
   }
 
-  // player finished game and won
-  if (cellsFlagged === totalMines && cellsUnmarked === totalMines) gameOver = true;
-  if (cellsFlagged + cellsUnmarked === totalMines) gameOver = true;
+  // player wins the game
+  if (cellsFlaggedCorrectly === totalMines) gameOver = true;
+  if (cellsFlaggedCorrectly + cellsUnmarked === totalMines) gameOver = true;
 }
 
 // count neighbors

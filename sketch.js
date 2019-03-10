@@ -11,6 +11,7 @@
 
 // declare global variables
 var cellsFlagged; // number cells the user has flagged as possible mine
+var cellsFlaggedCorrectly; // number cells the user has CORRECTLY flagged as possible mine
 var cellsUnmarked; // number of cells that have not been marked yet
 var cols = 20; // number of columns
 var gameOver = false; // game state, game is running or over

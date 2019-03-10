@@ -98,8 +98,10 @@ function drawHeader() {
   let charDist = 4;
   let scoreWidth = 3 * charWidth + 2 * charDist;
 
-  // draw black background for score
+  // store current settings
   push();
+
+  // draw black background for score
   fill(0);
   stroke(0);
   rect(4, 4, scoreWidth + 2 * charDist, header - 8);
@@ -110,10 +112,36 @@ function drawHeader() {
   textFont(scoreFont);
   textSize(header);
   textStyle(NORMAL);
-  fill(65, 0, 0);
-  text("000", 4 + scoreWidth + 2 * charDist, header * 0.5 - 3)
-  fill(255, 0, 0);
-  text(totalMines - cellsFlagged, 4 + scoreWidth + 2 * charDist, header * 0.5 - 3)
+  let score = totalMines - cellsFlagged;
+  for (let digit = 1; digit <= 3; digit++) {
+    // calculate location where to draw digits
+    let charX = 4 + charDist + (charDist + charWidth) * (digit);
+    let charY = header * 0.5 - 3;
+
+    // draw zeroes in dull red as a background
+    fill(65, 0, 0);
+    text(0, charX, charY);
+
+    // skip if nothing to do
+    if (digit === 1 && score < 100) continue;
+    if (digit === 2 && score < 10) continue;
+
+    // draw background in dull red
+    fill(255, 0, 0);
+    if (score >= 100) {
+      let scoreHundreds = int(score / 100);
+      text(scoreHundreds, charX, charY);
+      score -= scoreHundreds * 100;
+    } else if (score >= 10) {
+      let scoreTens = int(score / 10);
+      text(scoreTens, charX, charY);
+      score -= scoreTens * 10;
+    } else {
+      text(score, charX, charY);
+    }
+  }
+
+  // restore previous settings
   pop();
 }
 
@@ -129,12 +157,6 @@ function mousePressed() {
 
           // reveal the cell otherwise
           grid[col][row].reveal();
-
-          // game over after if cell had a mine
-          if (grid[col][row].mine) {
-            gameOver = true;
-            playerWins = false;
-          }
 
           // place a flag
         } else if (mouseButton === CENTER) {

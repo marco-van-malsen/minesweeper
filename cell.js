@@ -85,7 +85,7 @@ class Cell {
       for (var yOff = -1; yOff <= 1; yOff++) {
         var row = this.row + yOff;
         if (row < 0 || row >= rows) continue;
-        if (grid[col][row].flagged && grid[col][row].mine) flagsFound++;
+        if (grid[col][row].flagged) flagsFound++;
       }
     }
 
@@ -100,9 +100,8 @@ class Cell {
       for (var yOff = -1; yOff <= 1; yOff++) {
         var row = this.row + yOff;
         if (row < 0 || row >= rows) continue;
-        // if (!grid[col][row].revealed && !grid[col][row].mine) grid[col][row].reveal();
+        if (grid[col][row].flagged) continue;
         if (grid[col][row].revealed) continue;
-        if (grid[col][row].mine) continue;
         grid[col][row].reveal();
       }
     }
@@ -119,8 +118,11 @@ class Cell {
     // unflag the cell
     if (this.flagged) this.flagged = false;
 
-    // un sneak-a-peak the cell
-    this.cheat = false;
+    // game over after if cell had a mine
+    if (this.mine) {
+      gameOver = true;
+      playerWins = false;
+    }
 
     // cell has no neighboring mines; floodfill
     if (this.neighborCount === 0) this.floodFill();
@@ -134,60 +136,65 @@ class Cell {
 
     // draw cell outline
     fill(192);
-    if (this.cheat) fill(200, 0, 0);
     stroke(100);
     rect(this.x, this.y, this.w, this.w);
 
     // show flagged cell
     if (this.flagged && !this.revealed) {
-      // base
+      push();
+      translate(this.cX, this.cY);
+
+      // base (black)
       fill(0);
       stroke(0);
-      triangle(
-        this.cX - 0.2 * w, this.cY + 0.3 * this.w,
-        this.cX + 0.2 * w, this.cY + 0.3 * this.w,
-        this.cX, this.cY + 0.1 * this.w);
+      triangle(-0.2 * w, 0.3 * this.w, 0.2 * w, 0.3 * this.w, 0, 0.1 * this.w);
 
-      // flag
+      // flag (red)
       fill(255, 0, 0);
       stroke(255, 0, 0);
-      triangle(
-        this.cX, this.cY + 0.1 * this.w,
-        this.cX, this.cY - 0.3 * this.w,
-        this.cX - 0.2 * this.w, this.cY - 0.1 * this.w);
+      triangle(0, 0.1 * this.w, 0, -0.3 * this.w, -0.2 * this.w, -0.1 * this.w);
+      pop();
     }
 
     // draw relief
     if (!this.revealed) {
-      let margin = 1;
-      let upperL = createVector(this.x + margin, this.y + margin);
-      let upperR = createVector(this.x + this.w - margin, this.y + margin);
-      let lowerL = createVector(this.x + margin, this.y + this.w - margin);
-      let lowerR = createVector(this.x + this.w - margin, this.y + this.w - margin);
-      strokeWeight(2);
-      stroke(255);
-      line(lowerL.x, lowerL.y, upperL.x, upperL.y);
-      line(upperL.x, upperL.y, upperR.x, upperR.y);
-      stroke(100);
-      line(lowerL.x, lowerL.y, lowerR.x, lowerR.y);
-      line(lowerR.x, lowerR.y, upperR.x, upperR.y);
-      strokeWeight(1);
+      for (var margin = 1; margin <= 2; margin++) {
+        // calculate corners
+        let upperL = createVector(this.x + margin, this.y + margin);
+        let upperR = createVector(this.x + this.w - margin, this.y + margin);
+        let lowerL = createVector(this.x + margin, this.y + this.w - margin);
+        let lowerR = createVector(this.x + this.w - margin, this.y + this.w - margin);
+
+        // draw left and upper lines in white
+        stroke(255);
+        line(lowerL.x, lowerL.y, upperL.x, upperL.y);
+        line(upperL.x, upperL.y, upperR.x, upperR.y);
+
+        // draw lower and right lines in dark grey
+        stroke(100);
+        line(lowerL.x, lowerL.y, lowerR.x, lowerR.y);
+        line(lowerR.x, lowerR.y, upperR.x, upperR.y);
+      }
     }
 
     // cell not revealed; return
     if (!this.revealed) return;
 
+    // store current settings and translate to cell center
+    push();
+    translate(this.cX, this.cY);
+
     // cell has a mine
     if (this.mine) {
       fill(0);
       stroke(0);
-      ellipse(this.cX, this.cY, this.w * 0.4);
-      line(this.cX - 0.3 * w, this.cY, this.cX + 0.3 * w, this.cY);
-      line(this.cX, this.cY - 0.3 * w, this.cX, this.cY + 0.3 * w);
-      line(this.cX - 0.25 * w, this.cY - 0.25 * w, this.cX + 0.25 * w, this.cY + 0.25 * w);
-      line(this.cX - 0.25 * w, this.cY + 0.25 * w, this.cX + 0.25 * w, this.cY - 0.25 * w);
+      ellipse(0, 0, this.w * 0.4);
+      line(-0.3 * w, 0, 0.3 * w, 0);
+      line(0, -0.3 * w, 0, 0.3 * w);
+      line(-0.25 * w, -0.25 * w, 0.25 * w, 0.25 * w);
+      line(-0.25 * w, 0.25 * w, 0.25 * w, -0.25 * w);
       fill(255);
-      ellipse(this.cX - 0.05 * w, this.cY - 0.05 * w, this.w * 0.15);
+      ellipse(-0.05 * w, -0.05 * w, this.w * 0.15);
 
       // cell has neighbours
     } else {
@@ -235,9 +242,12 @@ class Cell {
         }
 
         textSize(0.6 * w);
-        text(this.neighborCount, this.cX, this.cY);
+        text(this.neighborCount, 0, 0);
       }
     }
+
+    // restore previous settings
+    pop()
   }
 
   // place a Flagged
@@ -245,7 +255,7 @@ class Cell {
     // do nothing if cell already revealed
     if (this.revealed) return;
 
-    // change the flagged state
+    // toggle the flagged state
     this.flagged = !this.flagged;
   }
 }

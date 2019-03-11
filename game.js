@@ -59,6 +59,7 @@ function changeDifficulty() {
   }
 
   // restart game
+  gameState = PRE_GAME;
   setup();
 }
 

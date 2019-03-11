@@ -20,6 +20,7 @@ var cellsFlagged; // number cells the user has flagged as possible mine
 var cellsFlaggedCorrectly; // number cells the user has CORRECTLY flagged as possible mine
 var cellsUnmarked; // number of cells that have not been marked yet
 var cols = 16; // number of columns
+var difficulty = "Intermediate"; // difficulty level
 var grid; // the grid
 var header = 40; // pixels along y-axis reserved for header
 var playerWins = true; // keep track if player won or lost

@@ -32,6 +32,36 @@ function addRandomMines(c, r) {
   }
 }
 
+// change difficulty level
+function changeDifficulty() {
+  // change difficulty level
+  if (difficulty === "Beginner") {
+    difficulty = "Intermediate";
+  } else if (difficulty === "Intermediate") {
+    difficulty = "Expert";
+  } else if (difficulty === "Expert") {
+    difficulty = "Beginner";
+  }
+
+  // setup game
+  if (difficulty === "Beginner") {
+    cols = 8;
+    rows = 8;
+    totalMines = 10;
+  } else if (difficulty === "Intermediate") {
+    cols = 16;
+    rows = 16;
+    totalMines = 40;
+  } else if (difficulty === "Expert") {
+    cols = 24;
+    rows = 16;
+    totalMines = 99;
+  }
+
+  // restart game
+  setup();
+}
+
 // check all cells and count flagged and unmarked cells
 function checkCells() {
   cellsFlagged = 0;
@@ -137,10 +167,26 @@ function drawHeader() {
 
   // restore previous settings
   pop();
+
+  // draw game info during game play
+  if (gameState === GAME_OVER) return;
+  fill(0);
+  noStroke();
+  textAlign(RIGHT, CENTER);
+  textStyle(BOLD);
+  textSize(12);
+  text("Difficulty : " + difficulty + " (" + cols + "x" + rows + ")", width - 4, header * 0.5);
 }
 
 // what to do when the mouse is pressed
 function mousePressed() {
+  // check if the header was click
+  if (mouseX < width && mouseY < header) {
+    changeDifficulty();
+    return;
+  }
+
+  // check if a cell was clicked
   for (var col = 0; col < cols; col++) {
     for (var row = 0; row < rows; row++) {
       if (grid[col][row].contains(mouseX, mouseY)) {

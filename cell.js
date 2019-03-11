@@ -120,7 +120,7 @@ class Cell {
 
     // game over after if cell had a mine
     if (this.mine) {
-      gameOver = true;
+      gameState = GAME_OVER;
       playerWins = false;
     }
 

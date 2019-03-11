@@ -10,17 +10,16 @@
 // Marco van Malsen
 
 // add random mines
-function addRandomMines() {
+function addRandomMines(c, r) {
   // create a list of all possible cells where a mine can be
+  // takes two variables: c(olumn) and r(ow) of cell where no bomb is to be placed
   var options = [];
   for (var row = 0; row < cols; row++) {
     for (var col = 0; col < rows; col++) {
+      if (row === r && col === c) continue;
       options.push([row, col]);
     }
   }
-
-  // 10 percent of cells will have a mine
-  totalMines = floor(rows * cols * 0.1);
 
   // add selecting random cell, add mine and the remove cell
   for (var b = 0; b < totalMines; b++) {
@@ -47,8 +46,9 @@ function checkCells() {
   }
 
   // player wins the game
-  if (cellsFlaggedCorrectly === totalMines) gameOver = true;
-  if (cellsFlaggedCorrectly + cellsUnmarked === totalMines) gameOver = true;
+  if (cellsFlaggedCorrectly === totalMines) gameState = GAME_OVER;
+  if (cellsUnmarked === totalMines) gameState = GAME_OVER;
+  if (cellsFlaggedCorrectly + cellsUnmarked === totalMines) gameState = GAME_OVER;
 }
 
 // count neighbors
@@ -87,14 +87,6 @@ function drawHeader() {
   fill(200);
   rect(0, 0, cols * w, header);
 
-  // draw game title
-  noStroke();
-  fill(0);
-  textAlign(CENTER, CENTER);
-  textSize(0.75 * header);
-  textStyle(BOLD);
-  text("Minesweeper", cols * w * 0.5, header * 0.5 + 1);
-
   // setup character dimensions (as measured in ms-paint)
   let charWidth = 16;
   let charDist = 4;
@@ -121,8 +113,8 @@ function drawHeader() {
     let charY = header * 0.5 - 3;
 
     // draw zeroes in dull red as a background
-    fill(65, 0, 0);
-    text(0, charX, charY);
+    fill(100, 0, 0);
+    text(8, charX, charY);
 
     // skip if nothing to do
     if (digit === 1 && score < 100) continue;
@@ -152,6 +144,14 @@ function mousePressed() {
   for (var col = 0; col < cols; col++) {
     for (var row = 0; row < rows; row++) {
       if (grid[col][row].contains(mouseX, mouseY)) {
+        // add random mines and count neighbors upon first click by user
+        // this to avoid the first click being a bomb
+        if (gameState === PRE_GAME) {
+          addRandomMines(col, row);
+          countAllNeighbors();
+          gameState = GAME_ON;
+        }
+
         // reveal cell
         if (mouseButton != CENTER && mouseButton != RIGHT) {
           // ignore click when cell is flagged
@@ -187,6 +187,7 @@ function revealAllCells() {
     }
   }
 }
+
 // show all cells
 function showAllCells() {
   for (var col = 0; col < cols; col++) {

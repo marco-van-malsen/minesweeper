@@ -206,18 +206,36 @@ function showGameOverText() {
   let gameOverText = (playerWins ? "You Win" : "You Lose");
   let textWidth = (gameOverText.length * charWidth + (gameOverText.length - 1) * charDist);
 
-  // draw black background for gome over text
+  // store current settings and translate
   push();
+  translate(width - 4 - textWidth - 2 * charDist, 4);
+
+  // draw black background for gome over text
   fill(0);
   stroke(0);
-  rect(width - 4 - textWidth - 2 * charDist, 4, textWidth + 2 * charDist, header - 8);
+  rect(0, 0, textWidth + 2 * charDist, header - 8);
 
   // draw text
-  fill(255, 0, 0);
-  textAlign(RIGHT, CENTER);
+  textAlign(LEFT, CENTER);
   textFont(scoreFont);
   textSize(header);
   textStyle(NORMAL);
-  text(gameOverText, width - 4 - charDist, header * 0.5 - 3);
+
+  // translate to first character
+  translate(charDist, header * 0.5 - 6);
+
+  // draw all characters
+  for (var c = 1; c <= gameOverText.length; c++) {
+    // draw background text dimmed
+    fill(100, 0, 0);
+    text(8, 0, 0);
+
+    // draw actual text un-dimmed
+    fill(255, 0, 0);
+    text(gameOverText.substring(c - 1, c), 0, 0);
+    translate(charWidth + charDist, 0);
+  }
+
+  // draw text
   pop();
 }

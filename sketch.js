@@ -13,14 +13,18 @@
 const PRE_GAME = 0; // no game started yet
 const GAME_ON = 1; // game in progress
 const GAME_OVER = 2; // game over
+const LEVELS = ["Beginner", "Intermediate", "Expert"];
 var gameState = PRE_GAME;
 
 // declare global variables
+var buttons = []; // array with buttons
 var cellsFlagged; // number cells the user has flagged as possible mine
 var cellsFlaggedCorrectly; // number cells the user has CORRECTLY flagged as possible mine
 var cellsUnmarked; // number of cells that have not been marked yet
 var cols = 16; // number of columns
-var difficulty = "Intermediate"; // difficulty level
+var controlsArea = 100; // pixels along x-axis reserver for controls
+var difficulty = LEVELS[1]; // difficulty level, default ="Intermediate"
+var footer = 40; // pixels along y-axis reserved for footer
 var grid; // the grid
 var header = 40; // pixels along y-axis reserved for header
 var playerWins = true; // keep track if player won or lost
@@ -35,8 +39,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(cols * w + 1, header + separator + rows * w + 1);
-  createGrid();
+  initGame();
   noLoop();
   draw();
 }
@@ -45,6 +48,8 @@ function draw() {
   background(255);
   checkCells();
   drawHeader();
+  drawControlsArea();
+  drawFooter();
   if (gameState === GAME_OVER) {
     revealAllCells();
     showGameOverText();

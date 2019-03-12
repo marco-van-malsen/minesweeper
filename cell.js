@@ -26,11 +26,6 @@ class Cell {
     this.cY = this.y + 0.5 * w; // center of cell; y-coordinate
   }
 
-  // check if the cell was clicked
-  contains(x, y) {
-    return (x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w);
-  }
-
   // count number of mines in neighboring cells
   countMines() {
     // skip if cell contains a mine
@@ -105,6 +100,11 @@ class Cell {
         grid[col][row].reveal();
       }
     }
+  }
+
+  // check if the cell was clicked
+  isClicked(x, y) {
+    return (x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w);
   }
 
   // reveal cell

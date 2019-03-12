@@ -32,37 +32,6 @@ function addRandomMines(c, r) {
   }
 }
 
-// change difficulty level
-function changeDifficulty() {
-  // change difficulty level
-  if (difficulty === "Beginner") {
-    difficulty = "Intermediate";
-  } else if (difficulty === "Intermediate") {
-    difficulty = "Expert";
-  } else if (difficulty === "Expert") {
-    difficulty = "Beginner";
-  }
-
-  // setup game
-  if (difficulty === "Beginner") {
-    cols = 8;
-    rows = 8;
-    totalMines = 10;
-  } else if (difficulty === "Intermediate") {
-    cols = 16;
-    rows = 16;
-    totalMines = 40;
-  } else if (difficulty === "Expert") {
-    cols = 24;
-    rows = 16;
-    totalMines = 99;
-  }
-
-  // restart game
-  gameState = PRE_GAME;
-  setup();
-}
-
 // check all cells and count flagged and unmarked cells
 function checkCells() {
   cellsFlagged = 0;
@@ -93,10 +62,6 @@ function countAllNeighbors() {
 
 // create the grid
 function createGrid() {
-  // determine number of columns based on canvas size
-  cols = floor(width / w);
-  rows = floor((height - header - separator) / w);
-
   // create the grid
   grid = new Array(cols);
   for (var col = 0; col < grid.length; col++) {
@@ -109,6 +74,34 @@ function createGrid() {
       grid[col][row] = new Cell(col, row, w);
     }
   }
+}
+
+// draw controls area
+function drawControlsArea() {
+  // draw rectangle
+  stroke(0);
+  fill(200);
+  rect(cols * w + separator, header + separator, controlsArea, rows * w);
+
+  // draw buttons
+  for (var b of buttons) b.show();
+}
+
+// draw footer with game instructions
+function drawFooter() {
+  // draw header
+  stroke(0);
+  fill(200);
+  rect(0, height - footer - 1, cols * w, footer);
+
+  // write instructions
+  fill(0);
+  noStroke();
+  textAlign(CENTER, CENTER);
+  textSize(14);
+  textStyle(NORMAL);
+  text("Left click: reveal", cols * w * 0.5, height - footer + 10);
+  text("Middle click: place flag", cols * w * 0.5, height - footer + 30);
 }
 
 // draw header with game title and game info
@@ -144,7 +137,7 @@ function drawHeader() {
     let charY = header * 0.5 - 3;
 
     // draw zeroes in dull red as a background
-    fill(100, 0, 0);
+    fill(85, 0, 0);
     text(8, charX, charY);
 
     // skip if nothing to do
@@ -168,29 +161,38 @@ function drawHeader() {
 
   // restore previous settings
   pop();
+}
 
-  // draw game info during game play
-  if (gameState === GAME_OVER) return;
-  fill(0);
-  noStroke();
-  textAlign(RIGHT, CENTER);
-  textStyle(BOLD);
-  textSize(12);
-  text("Difficulty : " + difficulty + " (" + cols + "x" + rows + ")", width - 4, header * 0.5);
+// change difficulty level
+function initGame() {
+  // setup game
+  if (difficulty === "Beginner") {
+    cols = 8;
+    rows = 8;
+    totalMines = 10;
+  } else if (difficulty === "Intermediate") {
+    cols = 16;
+    rows = 16;
+    totalMines = 40;
+  } else if (difficulty === "Expert") {
+    cols = 24;
+    rows = 16;
+    totalMines = 99;
+  }
+
+  // restart game
+  createCanvas(cols * w + separator + controlsArea + 1, header + separator + rows * w + separator + footer + 1);
+  createGrid();
+  createControls();
+  gameState = PRE_GAME;
 }
 
 // what to do when the mouse is pressed
 function mousePressed() {
-  // check if the header was click
-  if (mouseX < width && mouseY < header) {
-    changeDifficulty();
-    return;
-  }
-
   // check if a cell was clicked
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
-      if (grid[col][row].contains(mouseX, mouseY)) {
+  for (var row = 0; row < rows; row++) {
+    for (var col = 0; col < cols; col++) {
+      if (grid[col][row].isClicked(mouseX, mouseY)) {
         // add random mines and count neighbors upon first click by user
         // this to avoid the first click being a bomb
         if (gameState === PRE_GAME) {
@@ -217,6 +219,11 @@ function mousePressed() {
         }
       }
     }
+  }
+
+  // check if a button was clicked
+  for (var b of buttons) {
+    if (b.isClicked(mouseX, mouseY)) b.changeDifficulty();
   }
 
   // redraw the canvas
@@ -255,7 +262,7 @@ function showGameOverText() {
 
   // store current settings and translate
   push();
-  translate(width - 4 - textWidth - 2 * charDist, 4);
+  translate(cols * w - 4 - textWidth - 2 * charDist, 4);
 
   // draw black background for gome over text
   fill(0);
@@ -274,7 +281,7 @@ function showGameOverText() {
   // draw all characters
   for (var c = 1; c <= gameOverText.length; c++) {
     // draw background text dimmed
-    fill(100, 0, 0);
+    fill(85, 0, 0);
     text(8, 0, 0);
 
     // draw actual text un-dimmed

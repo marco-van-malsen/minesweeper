@@ -14,10 +14,10 @@ function addRandomMines(c, r) {
   // create a list of all possible cells where a mine can be
   // takes two variables: c(olumn) and r(ow) of cell where no bomb is to be placed
   var options = [];
-  for (var row = 0; row < cols; row++) {
-    for (var col = 0; col < rows; col++) {
-      if (row === r && col === c) continue;
-      options.push([row, col]);
+  for (var row = 0; row < rows; row++) {
+    for (var col = 0; col < cols; col++) {
+      if (col === c && row === r) continue;
+      options.push([col, row]);
     }
   }
 
@@ -37,8 +37,8 @@ function checkCells() {
   cellsFlagged = 0;
   cellsFlaggedCorrectly = 0;
   cellsUnmarked = 0;
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
+  for (var row = 0; row < rows; row++) {
+    for (var col = 0; col < cols; col++) {
       if (grid[col][row].flagged) cellsFlagged++;
       if (grid[col][row].flagged && grid[col][row].mine) cellsFlaggedCorrectly++;
       if (!grid[col][row].revealed) cellsUnmarked++;
@@ -53,8 +53,8 @@ function checkCells() {
 
 // count neighbors
 function countAllNeighbors() {
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
+  for (var row = 0; row < rows; row++) {
+    for (var col = 0; col < cols; col++) {
       grid[col][row].countMines();
     }
   }
@@ -69,8 +69,8 @@ function createGrid() {
   }
 
   // create cells
-  for (var col = 0; col < cols; col++) {
-    for (var row = 0; row < rows; row++) {
+  for (var row = 0; row < rows; row++) {
+    for (var col = 0; col < cols; col++) {
       grid[col][row] = new Cell(col, row, w);
     }
   }

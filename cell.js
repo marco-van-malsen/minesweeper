@@ -137,7 +137,7 @@ class Cell {
     // draw cell outline
     fill(192);
     stroke(100);
-    rect(this.x, this.y, this.w, this.w);
+    rect(this.x, this.y, this.w, this.w, w * 0.1);
 
     // show flagged cell
     if (this.flagged && !this.revealed) {
@@ -147,12 +147,12 @@ class Cell {
       // base (black)
       fill(0);
       stroke(0);
-      triangle(-0.2 * w, 0.3 * this.w, 0.2 * w, 0.3 * this.w, 0, 0.1 * this.w);
+      triangle(w * -0.2, this.w * 0.3, w * 0.2, this.w * 0.3, 0, this.w * 0.1);
 
       // flag (red)
       fill(255, 0, 0);
       stroke(255, 0, 0);
-      triangle(0, 0.1 * this.w, 0, -0.3 * this.w, -0.2 * this.w, -0.1 * this.w);
+      triangle(0, this.w * 0.1, 0, this.w * -0.3, this.w * -0.2, this.w * -0.1);
       pop();
     }
 

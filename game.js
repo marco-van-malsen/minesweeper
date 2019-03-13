@@ -92,7 +92,7 @@ function drawFooter() {
   // draw header
   stroke(0);
   fill(200);
-  rect(0, height - footer - 1, cols * w, footer);
+  rect(0, height - footer - 1, cols * w, footer, w * 0.1);
 
   // write instructions
   fill(0);
@@ -109,7 +109,7 @@ function drawHeader() {
   // draw header
   stroke(0);
   fill(200);
-  rect(0, 0, cols * w, header);
+  rect(0, 0, cols * w, header, w * 0.1);
 
   // setup character dimensions (as measured in ms-paint)
   let charWidth = 16;

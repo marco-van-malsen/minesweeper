@@ -27,12 +27,13 @@ class Control {
       fill(127);
     }
     stroke(0);
-    rect(this.x, this.y, this.w, this.h);
+    rect(this.x, this.y, this.w, this.h, w * 0.1);
 
     // draw text
     fill(0);
     noStroke();
     textAlign(CENTER, CENTER);
+    textSize(14);
     // draw rectangle
     if (difficulty === this.label) {
       textStyle(BOLD);

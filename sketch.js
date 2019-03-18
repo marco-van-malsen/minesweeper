@@ -27,6 +27,7 @@ var difficulty = LEVELS[1]; // difficulty level, default ="Intermediate"
 var footer = 40; // pixels along y-axis reserved for footer
 var grid; // the grid
 var header = 40; // pixels along y-axis reserved for header
+var lastClickedCell = []; // track last clicked cell
 var playerWins = true; // keep track if player won or lost
 var rows = 16; // number of rows
 var scoreFont; // font used for scoring / points
@@ -36,6 +37,7 @@ var w = 30; // cell-size, height and width
 
 function preload() {
   scoreFont = loadFont('assets/DS-DIGIB.TTF');
+  cellFont = loadFont('assets/mine-sweeper.ttf');
 }
 
 function setup() {

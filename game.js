@@ -217,6 +217,9 @@ function mousePressed() {
             grid[col][row].toggleFlag();
           }
         }
+
+        // track last clicked cell
+        lastClickedCell = [col, row];
       }
     }
   }

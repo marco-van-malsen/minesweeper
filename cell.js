@@ -241,13 +241,27 @@ class Cell {
             break;
         }
 
-        textSize(0.6 * w);
+        textFont(cellFont);
+        textSize(11);
+        textStyle(NORMAL);
         text(this.neighborCount, 0, 0);
       }
     }
 
     // restore previous settings
     pop()
+
+    // show last clicked cell
+    if (gameState === GAME_OVER && !playerWins) {
+      if ((this.col === lastClickedCell[0] && this.row === lastClickedCell[1]) || this.flagged && !this.mine) {
+        push();
+        noFill();
+        stroke(255, 0, 0);
+        strokeWeight(3);
+        rect(this.x + 2, this.y + 2, this.w - 4, this.w - 4, 2);
+        pop();
+      }
+    }
   }
 
   // place a Flagged

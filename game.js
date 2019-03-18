@@ -190,36 +190,38 @@ function initGame() {
 // what to do when the mouse is pressed
 function mousePressed() {
   // check if a cell was clicked
-  for (var row = 0; row < rows; row++) {
-    for (var col = 0; col < cols; col++) {
-      if (grid[col][row].isClicked(mouseX, mouseY)) {
-        // add random mines and count neighbors upon first click by user
-        // this to avoid the first click being a bomb
-        if (gameState === PRE_GAME) {
-          addRandomMines(col, row);
-          countAllNeighbors();
-          gameState = GAME_ON;
-        }
-
-        // reveal cell
-        if (mouseButton != CENTER && mouseButton != RIGHT) {
-          // ignore click when cell is flagged
-          if (grid[col][row].flagged) return;
-
-          // reveal the cell otherwise
-          grid[col][row].reveal();
-
-          // place a flag
-        } else if (mouseButton === CENTER) {
-          if (grid[col][row].revealed) {
-            grid[col][row].floodFillAlt();
-          } else {
-            grid[col][row].toggleFlag();
+  if (gameState != GAME_OVER) {
+    for (var row = 0; row < rows; row++) {
+      for (var col = 0; col < cols; col++) {
+        if (grid[col][row].isClicked(mouseX, mouseY)) {
+          // add random mines and count neighbors upon first click by user
+          // this to avoid the first click being a bomb
+          if (gameState === PRE_GAME) {
+            addRandomMines(col, row);
+            countAllNeighbors();
+            gameState = GAME_ON;
           }
-        }
 
-        // track last clicked cell
-        lastClickedCell = [col, row];
+          // reveal cell
+          if (mouseButton != CENTER && mouseButton != RIGHT) {
+            // ignore click when cell is flagged
+            if (grid[col][row].flagged) return;
+
+            // reveal the cell otherwise
+            grid[col][row].reveal();
+
+            // place a flag
+          } else if (mouseButton === CENTER) {
+            if (grid[col][row].revealed) {
+              grid[col][row].floodFillAlt();
+            } else {
+              grid[col][row].toggleFlag();
+            }
+          }
+
+          // track last clicked cell
+          lastClickedCell = [col, row];
+        }
       }
     }
   }

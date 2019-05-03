@@ -170,14 +170,17 @@ function initGame() {
     cols = 8;
     rows = 8;
     totalMines = 10;
+    totalMines = 8;
   } else if (difficulty === "Intermediate") {
     cols = 16;
     rows = 16;
     totalMines = 40;
+    totalMines = 32;
   } else if (difficulty === "Expert") {
     cols = 24;
     rows = 16;
     totalMines = 99;
+    totalMines = 80;
   }
 
   // restart game
